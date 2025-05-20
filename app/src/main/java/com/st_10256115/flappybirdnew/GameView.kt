@@ -32,11 +32,16 @@ class GameView(context: Context, attrs: AttributeSet? = null) : SurfaceView(cont
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
+        startGame()
+        gameThread.setRunning(true)
+        gameThread.start()
+    }
+
+    private fun startGame() {
         val centerX = width / 2f
         val centerY = height / 2f
         bird = Bird(centerX, centerY)
 
-        // Initialize pipes
         pipes.clear()
         for (i in 0 until numberOfPipes) {
             val pipeX = width + i * pipeSpacing
@@ -45,9 +50,6 @@ class GameView(context: Context, attrs: AttributeSet? = null) : SurfaceView(cont
 
         score = 0
         isGameOver = false
-
-        gameThread.setRunning(true)
-        gameThread.start()
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
@@ -112,9 +114,15 @@ class GameView(context: Context, attrs: AttributeSet? = null) : SurfaceView(cont
         canvas.drawText("Game Over", width / 2f, height / 2f, paint)
     }
 
+    private fun resetGame() {
+        startGame()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN && !isGameOver) {
-            if (::bird.isInitialized) {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            if (isGameOver) {
+                resetGame()
+            } else if (::bird.isInitialized) {
                 bird.flap()
             }
             return true
