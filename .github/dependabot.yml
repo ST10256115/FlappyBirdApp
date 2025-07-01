@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"  # root of repo
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
